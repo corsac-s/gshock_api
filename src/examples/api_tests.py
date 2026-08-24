@@ -50,8 +50,8 @@ async def run_api_tests(argv: Sequence[str]) -> None:  # noqa: PLR0915
         app_info = await api.get_app_info()
         logger.info(f"app info: {app_info}")
 
-        home_time = await api.get_home_time()
-        logger.info(f"home time: {home_time}")
+        #home_time = await api.get_home_time()
+        #logger.info(f"home time: {home_time}")
 
         pressed_button = await api.get_pressed_button()
         logger.info(f"pressed button: {pressed_button}")
@@ -67,35 +67,34 @@ async def run_api_tests(argv: Sequence[str]) -> None:  # noqa: PLR0915
         logger.info(f"condition: {condition}")
 
         if destructive:
-            await api.set_time(time.time() + 10 * 60)
+            await api.set_time()
 
             alarms = await api.get_alarms()
             logger.info(f"alarms: {pformat(alarms)}")
 
             alarms[0]["hour"] = 7
-            alarms[0]["minute"] = 25
-            alarms[0]["enabled"] = True
+            alarms[0]["minute"] = 30
+            alarms[0]["enabled"] = False
             await api.set_alarms(alarms)
 
             seconds = await api.get_timer()
             logger.info(f"timer: {seconds} seconds")
+            await api.set_timer(60 * 10)
 
-            await api.set_timer(seconds + 10)
-            time_adjstment = await api.get_time_adjustment()
-            logger.info(f"time_adjstment: {time_adjstment}")
-
+            time_adjustment = await api.get_time_adjustment()
+            logger.info(f"time_adjstment: {time_adjustment}")
             await api.set_time_adjustment(time_adjustment=True, minutes_after_hour=10)
 
             settings_local = await api.get_basic_settings()
             logger.info(f"settings: {pformat(settings_local)}")
 
-            settings_local["button_tone"] = True
-            settings_local["language"] = "Russian"
+            settings_local["button_tone"] = False
+            settings_local["language"] = "English"
             settings_local["time_format"] = "24h"
 
             await api.set_settings(settings_local)
             settings_local = await api.get_basic_settings()
-            await app_notifications(api)
+            #await app_notifications(api)
 
             # Create a single event
             tz = pytz.timezone("America/Toronto")
@@ -118,16 +117,16 @@ async def run_api_tests(argv: Sequence[str]) -> None:  # noqa: PLR0915
                 + event_date_str
                 + """}}"""
             )
-            Event().create_event(json.loads(event_json_str))
-            logger.info(f"Created event: {pformat(json.loads(event_json_str))}")
+            #Event().create_event(json.loads(event_json_str))
+            #logger.info(f"Created event: {pformat(json.loads(event_json_str))}")
 
             reminders = await api.get_reminders()
             for reminder in reminders:
                 logger.info (f"reminder: {pformat(reminder)}")
 
-            reminders[3]["title"] = "Test Event"
+            #reminders[3]["title"] = "Test Event"
 
-            await api.set_reminders(reminders)
+            #await api.set_reminders(reminders)
 
     except GShockConnectionError as e:
         logger.info(f"Connection problem: {e}")

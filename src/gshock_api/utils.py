@@ -13,6 +13,10 @@ def to_casio_cmd(bytes_str: str) -> bytes:
     """
     Converts a compact hexadecimal string (e.g., 'A3010C') into a bytes object.
     """
+    #print(f"Command: {bytes_str}")
+    # Use remove_prefix for clean constant usage
+    if bytes_str.startswith(hex_prefix):
+        bytes_str = remove_prefix(bytes_str, hex_prefix)
     # Split the string into two-character parts ('A3', '01', '0C')
     parts: list[str] = [bytes_str[i: i + 2] for i in range(0, len(bytes_str), 2)]
     
