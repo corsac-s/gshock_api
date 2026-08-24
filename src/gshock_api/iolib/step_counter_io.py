@@ -69,9 +69,10 @@ class StepCounterIO:
     connection: ConnectionProtocol | None = None
     accumulator: bytearray = bytearray()
     expected_length: int = FALLBACK_EXPECTED_LENGTH
+    peek: bool = False
 
     @staticmethod
-    async def request(connection: ConnectionProtocol) -> StepCounterData:
+    async def request(connection: ConnectionProtocol, peek: bool = False) -> StepCounterData:
         from gshock_api.watch_info import watch_info
 
         if not watch_info.hasStepCounter:
@@ -79,6 +80,7 @@ class StepCounterIO:
             return StepCounterData.unavailable()
 
         StepCounterIO.connection = connection
+        StepCounterIO.peek = peek
         StepCounterIO.accumulator = bytearray()
         StepCounterIO.expected_length = FALLBACK_EXPECTED_LENGTH
         StepCounterIO.result = CancelableResult[StepCounterData]()
@@ -123,7 +125,7 @@ class StepCounterIO:
             return
 
         # Acknowledge end of transaction
-        if StepCounterIO.connection is not None:
+        if StepCounterIO.connection is not None and not StepCounterIO.peek:
             try:
                 # Fire-and-forget end transaction command
                 import asyncio
