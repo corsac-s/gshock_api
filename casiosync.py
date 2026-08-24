@@ -16,21 +16,21 @@ from gshock_api.gshock_api import GshockAPI
 from gshock_api.logger import logger
 
 
-async def _fetch_lifelog(api: GshockAPI, *, peek: bool, print_log: bool) -> None:
-    """Fetch lifelog from the watch, parse it, and optionally emit log lines."""
-    from gshock_api.iolib.lifelog_io import LifelogIO
+async def _fetch_step_counter(api: GshockAPI, *, peek: bool, print_log: bool) -> None:
+    """Fetch step counter from the watch, parse it, and optionally emit log lines."""
+    from gshock_api.iolib.step_counter_io import StepCounterIO
     from lifelog import Lifelog
 
-    steps = await api.get_lifelog_steps(peek=peek)
-    logger.info(f"Total steps: {steps}")
+    steps = await api.get_step_count(peek)
+    logger.info(f"Total steps: {steps.current_day_steps}")
 
-    log = Lifelog.parse(LifelogIO._buffer)
+    log = Lifelog.parse(steps.payload)
     logger.info(f"parsed lifelog: {log.total_steps} steps, {log.total_distance}m")
 
     if not print_log:
         return
 
-    raw = base64.b64encode(zlib.compress(LifelogIO._buffer)).decode()
+    raw = base64.b64encode(zlib.compress(steps.payload)).decode()
     print(f'lifelog buffer="{raw}"')
 
     for entry in log.lifelog_entries():
@@ -91,7 +91,7 @@ async def main() -> None:
         # Lifelog must come before set_time in all modes because
         # set_time → initialize_for_setting_time() kills 0x11 writability.
         try:
-            await _fetch_lifelog(api, peek=args.peek, print_log=args.log)
+            await _fetch_step_counter(api, peek=args.peek, print_log=args.log)
         except Exception as e:
             logger.warning(f"Lifelog fetch failed: {e}")
 
