@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+# Script by Tavis Ormandy
 import asyncio
 import argparse
 import base64
@@ -8,7 +10,7 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parent / 'gshock_api/src'))
+sys.path.append(str(Path(__file__).resolve().parent.parent / 'gshock_api/src'))
 
 from gshock_api.connection import Connection
 from gshock_api.exceptions import GShockConnectionError

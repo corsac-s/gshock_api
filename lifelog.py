@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Script by Tavis Ormandy
 """Print a human-readable report for a 400-byte Casio life-log record."""
 
 from __future__ import annotations
