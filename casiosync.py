@@ -16,6 +16,7 @@ from gshock_api.connection import Connection
 from gshock_api.exceptions import GShockConnectionError
 from gshock_api.gshock_api import GshockAPI
 from gshock_api.logger import logger
+from gshock_api.watch_info import watch_info
 
 
 async def _fetch_step_counter(api: GshockAPI, *, peek: bool, print_log: bool, dump: bool) -> None:
@@ -91,6 +92,8 @@ async def main() -> None:
 
         watch_name = await api.get_watch_name()
         logger.info(f"got watch name: {watch_name}")
+        logger.info(f"model: {watch_info.model}")
+        logger.info(f"info: {watch_info.info}")
 
         # Lifelog must come before set_time in all modes because
         # set_time → initialize_for_setting_time() kills 0x11 writability.
