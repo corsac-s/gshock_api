@@ -81,7 +81,7 @@ async def main() -> None:
 
         # Convert -1.0 to sys.float_info.max for infinite timeout
         timeout = sys.float_info.max if args.timeout == -1.0 else args.timeout
-        connected = await connection.connect(watch_filter=None)
+        connected = await connection.connect(watch_filter=None, timeout=timeout)
         if not connected:
             raise GShockConnectionError("Failed to find or connect to the watch before timeout.")
 
