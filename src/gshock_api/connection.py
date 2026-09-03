@@ -44,7 +44,7 @@ class Connection:
             for char in service.characteristics:
                 self.characteristics_map[char.uuid] = char.uuid
 
-    async def connect(self, watch_filter: WatchFilter = None) -> bool:
+    async def connect(self, watch_filter: WatchFilter = None, timeout: float = -1) -> bool:
         """Connects to the G-Shock watch, optionally scanning if no address is provided."""
         try:
             device: Device = await scanner.scan(
@@ -60,7 +60,7 @@ class Connection:
             if self.address is None:
                 return False
 
-            self.client = BleakClient(device)
+            self.client = BleakClient(device, timeout=timeout)
             await self.client.connect()
 
             if not self.client.is_connected:
