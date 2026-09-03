@@ -39,11 +39,11 @@ class StepCounterIOFunctional:
 
         warnings: list[str] = []
 
-        # Decode a 6-byte BCD timestamp from payload[1:7] (year, month, day, hour, minute, second).
+        # Decode a 6-byte BCD timestamp from payload[0:6] (year, month, day, hour, minute, second).
         timestamp = None
         try:
             if len(payload) >= 7:
-                raw_ts = payload[1:7]
+                raw_ts = payload[0:6]
                 vals: list[int | None] = []
                 for b in raw_ts:
                     if b in (0xFE, 0xFF):
